@@ -41,9 +41,6 @@ export default function Users() {
                 role: form.role
             });
 
-            await api.post(`/accounts/users/${editing}/set-role/`, { role: form.role });
-            await api.post(`/accounts/users/${editing}/set-active/`, { is_active: form.is_active });
-
             setShowModal(false);
             load();
 
