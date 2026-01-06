@@ -73,7 +73,7 @@ export default function Login() {
 
                 <div className="text-center">
                     <small>
-                        ¿No tienes cuenta?{" "}
+                        ¿No tienes cuentaa?{" "}
                         <Link to="/register">Regístrate</Link>
                     </small>
                 </div>
