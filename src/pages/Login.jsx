@@ -47,37 +47,44 @@ export default function Login() {
     };
 
     return (
-        <div className="container mt-5" style={{ maxWidth: "400px" }}>
-            <h3>Login</h3>
-            <form onSubmit={submit}>
-                <input
-                    className="form-control mb-2"
-                    placeholder="Email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                />
+        <div className="w-100 d-flex align-items-center justify-content-center bg-light" style={{ minHeight: "100vh" }}>
+            <div className="card shadow-sm" style={{ width: "100%", maxWidth: "400px" }}>
+                <div className="card-body">
+                    <h3 className="text-center mb-4">AdminLTE</h3>
+                    <p className="text-center text-muted mb-4">
+                        Sign in to start your session
+                    </p>
+                    <form onSubmit={submit}>
+                        <input
+                            className="form-control mb-2"
+                            placeholder="Email"
+                            value={email}
+                            onChange={(e) => setEmail(e.target.value)}
+                        />
 
-                <input
-                    className="form-control mb-2"
-                    type="password"
-                    placeholder="Password"
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                />
+                        <input
+                            className="form-control mb-2"
+                            type="password"
+                            placeholder="Password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                        />
 
-                {error && (
-                    <div className="alert alert-danger py-2">{error}</div>
-                )}
+                        {error && (
+                            <div className="alert alert-danger py-2">{error}</div>
+                        )}
 
-                <button className="btn btn-primary w-100 mb-3">Entrar</button>
+                        <button className="btn btn-primary w-100 mb-3">Entrar</button>
 
-                <div className="text-center">
-                    <small>
-                        ¿No tienes cuentaa?{" "}
-                        <Link to="/register">Regístrate</Link>
-                    </small>
+                        <div className="text-center">
+                            <small>
+                                ¿No tienes cuentaa?{" "}
+                                <Link to="/register">Regístrate</Link>
+                            </small>
+                        </div>
+                    </form>
                 </div>
-            </form>
+            </div>
         </div>
     );
 }
