@@ -3,12 +3,14 @@ import api from "../api/axiosConfig";
 
 export default function Users() {
     const [list, setList] = useState([]);
+    const [companies, setCompanies] = useState([]);
     const [showModal, setShowModal] = useState(false);
     const [editing, setEditing] = useState(null);
     const [form, setForm] = useState({
         email: "",
         role: "user",
         is_active: true,
+        codigo_empresa: "",
     });
     const [error, setError] = useState("");
 
@@ -17,8 +19,14 @@ export default function Users() {
         setList(res.data);
     };
 
+    const loadCompanies = async () => {
+        const res = await api.get("/companies/");
+        setCompanies(res.data);
+    };
+
     useEffect(() => {
         load();
+        loadCompanies();
     }, []);
 
     const openEdit = (u) => {
@@ -27,6 +35,7 @@ export default function Users() {
             email: u.email,
             role: u.role,
             is_active: u.is_active,
+            codigo_empresa: u.codigo_empresa || "",
         });
         setError("");
         setShowModal(true);
@@ -38,7 +47,8 @@ export default function Users() {
 
             await api.patch(`/accounts/users/${editing}/`, {
                 is_active: form.is_active,
-                role: form.role
+                role: form.role,
+                codigo_empresa: form.codigo_empresa
             });
 
             setShowModal(false);
@@ -55,6 +65,7 @@ export default function Users() {
             if (data.email) setError(data.email[0]);
             else if (data.role) setError(data.role[0]);
             else if (data.is_active) setError(data.is_active[0]);
+            else if (data.codigo_empresa) setError(data.codigo_empresa[0]);
             else setError("Datos inválidos");
         }
     };
@@ -75,6 +86,7 @@ export default function Users() {
                     <tr>
                         <th>Email</th>
                         <th>Rol</th>
+                        <th>Empresa</th>
                         <th>Activo</th>
                         <th></th>
                     </tr>
@@ -84,6 +96,7 @@ export default function Users() {
                         <tr key={u.id}>
                             <td>{u.email}</td>
                             <td>{u.role}</td>
+                            <td>{u.codigo_empresa_nombre || "N/A"}</td>
                             <td>{u.is_active ? "Sí" : "No"}</td>
                             <td className="text-end">
                                 <button
@@ -118,8 +131,9 @@ export default function Users() {
                                 {error && <div className="alert alert-danger">{error}</div>}
 
                                 <div className="mb-2">
-                                    <label>Email</label>
+                                    <label htmlFor="email">Email</label>
                                     <input
+                                        id="email"
                                         disabled
                                         className="form-control"
                                         value={form.email}
@@ -127,8 +141,9 @@ export default function Users() {
                                 </div>
 
                                 <div className="mb-2">
-                                    <label>Rol</label>
+                                    <label htmlFor="role">Rol</label>
                                     <select
+                                        id="role"
                                         className="form-control"
                                         value={form.role}
                                         onChange={(e) => setForm({ ...form, role: e.target.value })}
@@ -138,16 +153,35 @@ export default function Users() {
                                     </select>
                                 </div>
 
+                                <div className="mb-2">
+                                    <label htmlFor="codigo_empresa">Código Empresa</label>
+                                    <select
+                                        id="codigo_empresa"
+                                        className="form-control"
+                                        value={form.codigo_empresa}
+                                        onChange={(e) => setForm({ ...form, codigo_empresa: e.target.value })}
+                                        required
+                                    >
+                                        <option value="">Seleccionar empresa</option>
+                                        {companies.map((c) => (
+                                            <option key={c.id} value={c.id}>
+                                                {c.name} {c.is_primary && "(Principal)"}
+                                            </option>
+                                        ))}
+                                    </select>
+                                </div>
+
                                 <div className="form-check mt-3">
                                     <input
                                         type="checkbox"
+                                        id="is_active"
                                         className="form-check-input"
                                         checked={form.is_active}
                                         onChange={(e) =>
                                             setForm({ ...form, is_active: e.target.checked })
                                         }
                                     />
-                                    <label className="form-check-label">Activo</label>
+                                    <label className="form-check-label" htmlFor="is_active">Activo</label>
                                 </div>
                             </div>
 

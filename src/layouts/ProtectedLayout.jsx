@@ -1,10 +1,24 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import Sidebar from "../components/Sidebar";
 import { Outlet } from "react-router-dom";
+import api from "../api/axiosConfig";
 
 export default function ProtectedLayout() {
     const [sidebarOpen, setSidebarOpen] = useState(true);
+    const [companyName, setCompanyName] = useState("Atlantis CRM");
+
+    useEffect(() => {
+        api.get("/accounts/me/")
+            .then((res) => {
+                if (res.data.codigo_empresa_nombre) {
+                    setCompanyName(res.data.codigo_empresa_nombre);
+                }
+            })
+            .catch(() => {
+                // Si falla, mantener el nombre por defecto
+            });
+    }, []);
 
     return (
         <div className="d-flex min-vh-100 bg-light">
@@ -24,7 +38,7 @@ export default function ProtectedLayout() {
                         <span className="bg-white text-primary rounded-circle d-inline-flex align-items-center justify-content-center me-2" style={{ width: 32, height: 32 }}>
                             <i className="bi bi-graph-up" />
                         </span>
-                        <span>Atlantis CRM</span>
+                        <span>{companyName}</span>
                     </Link>
 
                     <form className="d-none d-md-flex ms-4" style={{ maxWidth: "360px", width: "100%" }}>
