@@ -20,6 +20,11 @@ api.interceptors.response.use(
     async (error) => {
         const original = error.config;
 
+        // No intentar refrescar tokens en el endpoint de login
+        if (original.url && original.url.includes("/accounts/token/") && !original.url.includes("/refresh/")) {
+            return Promise.reject(error);
+        }
+
         if (error.response?.status === 401 && !original._retry) {
             original._retry = true;
 
@@ -28,6 +33,15 @@ api.interceptors.response.use(
 
                 try {
                     const refresh = localStorage.getItem("refresh");
+                    
+                    if (!refresh) {
+                        // No hay refresh token, rechazar directamente
+                        localStorage.removeItem("access");
+                        localStorage.removeItem("refresh");
+                        isRefreshing = false;
+                        return Promise.reject(error);
+                    }
+
                     const res = await axios.post(
                         `${import.meta.env.VITE_API_URL}/accounts/token/refresh/`,
                         { refresh }

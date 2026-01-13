@@ -47,6 +47,14 @@ export default function Sidebar({ onToggle }) {
                     </li>
                     {role === "admin" && (
                         <li className="mb-2">
+                            <Link to="/companies" className="d-flex align-items-center text-decoration-none text-dark">
+                                <i className="bi bi-building me-2" />
+                                <span>Empresas</span>
+                            </Link>
+                        </li>
+                    )}
+                    {role === "admin" && (
+                        <li className="mb-2">
                             <Link to="/users" className="d-flex align-items-center text-decoration-none text-dark">
                                 <i className="bi bi-person-gear me-2" />
                                 <span>Usuarios</span>

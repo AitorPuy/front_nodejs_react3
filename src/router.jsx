@@ -4,6 +4,7 @@ import Register from "./pages/Register";
 import Welcome from "./pages/Welcome";
 import Clients from "./pages/Clients";
 import Providers from "./pages/Providers";
+import Companies from "./pages/Companies";
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import ChangePassword from "./pages/ChangePassword";
@@ -33,6 +34,14 @@ export default function Router() {
                     <Route path="change-password" element={<ChangePassword />} />
                     <Route path="logout" element={<Logout />} />
 
+                    <Route
+                        path="companies"
+                        element={
+                            <ProtectedRoute role="admin">
+                                <Companies />
+                            </ProtectedRoute>
+                        }
+                    />
                     <Route
                         path="users"
                         element={

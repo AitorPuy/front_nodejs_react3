@@ -1,11 +1,30 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import api from "../api/axiosConfig";
+import axios from "axios";
 
 export default function Login() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [error, setError] = useState("");
+    const [companyName, setCompanyName] = useState("AdminLTE");
+
+    useEffect(() => {
+        // Obtener empresa principal sin autenticación
+        const loadPrimaryCompany = async () => {
+            try {
+                const baseURL = import.meta.env.VITE_API_URL;
+                const res = await axios.get(`${baseURL}/companies/primary/`);
+                if (res.data && res.data.name) {
+                    setCompanyName(res.data.name);
+                }
+            } catch (err) {
+                // Si falla, mantener el nombre por defecto
+                console.log("No se pudo cargar la empresa principal:", err);
+            }
+        };
+        loadPrimaryCompany();
+    }, []);
 
     const submit = async (e) => {
         e.preventDefault();
@@ -50,7 +69,7 @@ export default function Login() {
         <div className="w-100 d-flex align-items-center justify-content-center bg-light" style={{ minHeight: "100vh" }}>
             <div className="card shadow-sm" style={{ width: "100%", maxWidth: "400px" }}>
                 <div className="card-body">
-                    <h3 className="text-center mb-4">AdminLTE</h3>
+                    <h3 className="text-center mb-4">{companyName}</h3>
                     <p className="text-center text-muted mb-4">
                         Sign in to start your session
                     </p>
