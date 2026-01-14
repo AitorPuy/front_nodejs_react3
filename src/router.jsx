@@ -8,6 +8,7 @@ import Companies from "./pages/Companies";
 import Users from "./pages/Users";
 import Profile from "./pages/Profile";
 import ChangePassword from "./pages/ChangePassword";
+import LocationDescription from "./pages/LocationDescription";
 import ProtectedRoute from "./components/ProtectedRoute";
 import ProtectedLayout from "./layouts/ProtectedLayout";
 import Logout from "./pages/Logout";
@@ -32,6 +33,7 @@ export default function Router() {
                     <Route path="providers" element={<Providers />} />
                     <Route path="profile" element={<Profile />} />
                     <Route path="change-password" element={<ChangePassword />} />
+                    <Route path="location-description" element={<LocationDescription />} />
                     <Route path="logout" element={<Logout />} />
 
                     <Route

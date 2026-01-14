@@ -14,13 +14,20 @@ export default function Login() {
         const loadPrimaryCompany = async () => {
             try {
                 const baseURL = import.meta.env.VITE_API_URL;
+                if (!baseURL) {
+                    console.error("VITE_API_URL no está configurada. Crea un archivo .env con VITE_API_URL=http://localhost:8000/api");
+                    return;
+                }
                 const res = await axios.get(`${baseURL}/companies/primary/`);
                 if (res.data && res.data.name) {
                     setCompanyName(res.data.name);
                 }
             } catch (err) {
                 // Si falla, mantener el nombre por defecto
-                console.log("No se pudo cargar la empresa principal:", err);
+                console.error("No se pudo cargar la empresa principal:", err);
+                if (err.code === "ERR_NETWORK") {
+                    console.error("Verifica que el backend esté corriendo y que CORS esté configurado correctamente");
+                }
             }
         };
         loadPrimaryCompany();
@@ -53,15 +60,46 @@ export default function Login() {
             window.location.href = "/";
 
         } catch (err) {
-            if (!err.response) {
-                setError("Error de red");
+            console.error("Error en login:", err);
+            
+            // Verificar si la URL de la API está configurada
+            const apiUrl = import.meta.env.VITE_API_URL;
+            if (!apiUrl) {
+                setError("Error: VITE_API_URL no está configurada. Verifica el archivo .env");
                 return;
             }
+            
+            if (!err.response) {
+                // Error de red (backend no disponible, CORS, etc.)
+                if (err.code === "ERR_NETWORK" || err.message?.includes("Network Error")) {
+                    setError(`Error de conexión. Verifica que el backend esté corriendo en ${apiUrl}`);
+                } else {
+                    setError(`Error de red: ${err.message || "Desconocido"}`);
+                }
+                return;
+            }
+            
             if (err.response.status === 401) {
                 setError("Email o contraseña incorrectos");
                 return;
             }
-            setError("Error desconocido");
+            
+            if (err.response.status === 404) {
+                setError(`Endpoint no encontrado. Verifica que la URL del backend sea correcta: ${apiUrl}`);
+                return;
+            }
+            
+            if (err.response.status === 500) {
+                setError("Error del servidor. Revisa los logs del backend");
+                return;
+            }
+            
+            // Mostrar el mensaje de error del servidor si está disponible
+            const errorMessage = err.response?.data?.detail || 
+                                err.response?.data?.message || 
+                                err.response?.data?.error ||
+                                `Error ${err.response.status}: ${err.response.statusText}`;
+            setError(errorMessage);
         }
     };
 
